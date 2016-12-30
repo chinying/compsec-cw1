@@ -31,7 +31,7 @@ class EllipticCurve:
         if p == q:
             m = ((3 * (p.x ** 2) + self.a) % self.k) * (self.modinv(2 * p.y, self.k)) % self.k
         else:
-            m = (((p.y - q.y) % self. k) * self.modinv(p.x - q.x, self.k)) % self.k
+            m = (((p.y - q.y) % self.k) * self.modinv(p.x - q.x, self.k)) % self.k
         xr = (m**2 - p.x - q.x) % self.k
         yr = -(q.y + m * (xr - q.x)) % self.k
         return Point(xr, yr)
@@ -76,13 +76,3 @@ class EllipticCurve:
 # print(E.mult(p, 3))
 # print(E.order(p))
 # """end example"""
-
-# # my data
-# print("--- cy's coursework ---")
-# k = 149
-# E = EllipticCurve(a = -4, b = 10, k = k)
-# p = Point(29, 61)
-# q = Point(32, 67)
-# print(E)
-# print("R : (%s) " % E.add(p, q))
-# print("S : (%s) " % E.mult(p, 3))

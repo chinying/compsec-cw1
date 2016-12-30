@@ -14,5 +14,10 @@ from ecc import Point, EllipticCurve
 k = 149
 E = EllipticCurve(a = -4, b = 10, k = k)
 p = Point(29, 61)
+q = Point(32, 67)
+print(E)
+print("R : (%s) " % E.add(p, q))
+print("S : (%s) " % E.mult(p, 3))
 # print(E.onCurve(p.x, p.y))
+assert(E.onCurve(p.x, p.y) == True) # checks that p is on the elliptic curve
 print(E.order(p))
