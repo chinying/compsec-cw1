@@ -10,13 +10,16 @@ class Point:
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+    
+    def __hash__(self):
+        return hash((self.x, self.y)) 
 
 class EllipticCurve:
     def __init__(self, a, b, k, points=None):
         self.a = a
         self.b = b
         self.k = k
-        self.points = points if points is not None else {}
+        self.points = points if points is not None else set() 
 
     def __str__(self):
         return "y^2 = x^3 + " + str(self.a) + "x + " + str(self.b)
@@ -51,12 +54,23 @@ class EllipticCurve:
             u, v, w, r, s, t = (r - q * u), (s - q * v), (t - q * w), u, v, w
         return r % m
 
-    def order(self, p): # brute force, prime is so small anyway
+    def order(self): # order
+        cnt = 0
+        for x in range(self.k):
+            for y in range(self.k):
+                if self.onCurve(x, y):
+                    self.insertPoint(Point(x, y))
+                    cnt += 1
+        return cnt + 1
+
+    # precondition: you need to provide a point p
+    def sub_order(self, p): # brute force, prime is so small anyway
         i = 0
         tmp = deepcopy(p)
         while True:
             if self.onCurve(p.x, p.y) is False:
                 break
+            self.insertPoint(p)
             p = self.add(p, tmp)
             i += 1
         return i + 1 # include point at infinity
@@ -74,5 +88,5 @@ class EllipticCurve:
 # print(E)
 # print("R : (%s) " % E.add(p, q))
 # print(E.mult(p, 3))
-# print(E.order(p))
+# print(E.order())
 # """end example"""

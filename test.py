@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from copy import deepcopy
 from ecc import Point, EllipticCurve
 # p = Point(5,1)
@@ -20,4 +21,19 @@ print("R : (%s) " % E.add(p, q))
 print("S : (%s) " % E.mult(p, 3))
 # print(E.onCurve(p.x, p.y))
 assert(E.onCurve(p.x, p.y) == True) # checks that p is on the elliptic curve
-print(E.order(p))
+print(E.order())
+pts = (E.points)
+x = []
+y = []
+
+for p in pts:
+    print(p.x, p.y)
+    x.append(p.x)
+    y.append(p.y)
+
+plt.scatter(x, y)
+plt.axhline(y=k/2)
+plt.grid()
+plt.show()
+
+plt.close()
