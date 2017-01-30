@@ -32,17 +32,21 @@ class EllipticCurve:
 
     def add(self, p, q):
         if p == q:
-            m = ((3 * (p.x ** 2) + self.a) % self.k) * (self.modinv(2 * p.y, self.k)) % self.k
+            m = ((3 * (p.x ** 2) + self.a) % self.k) * (self.modinv(
+                2 * p.y, self.k)) % self.k
         else:
-            m = (((p.y - q.y) % self.k) * self.modinv(p.x - q.x, self.k)) % self.k
+            m = (((p.y - q.y) % self.k) * self.modinv(p.x - q.x, 
+                self.k)) % self.k
         xr = (m**2 - p.x - q.x) % self.k
         yr = -(q.y + m * (xr - q.x)) % self.k
         return Point(xr, yr)
-
-    def mult(self, p, n): # nice TODO use the doubling thing like fast exp, speeds up from linear to log
+    
+    # nice TODO use the doubling thing like fast exp, 
+    # speeds up from linear to log
+    def mult(self, p, n):
         tmp = deepcopy(p) # idk enough about this but deep copy just in case
-        for i in range(n-1): # needs to -1, just think about it
-            # print(i, p, tmp)
+        # n-1 because n*p is adding p to itself n-1 times 
+        for i in range(n-1): 
             p = self.add(p, tmp)
         return p
 
@@ -63,7 +67,8 @@ class EllipticCurve:
                     cnt += 1
         return cnt + 1
 
-    # precondition: you need to provide a point p, and this generates the subgroup. returns subgroup of points + size
+    # precondition: you need to provide a point p, and this generates the 
+    # subgroup. returns subgroup of points + size
     def sub_order(self, p): 
         i = 1
         tmp = deepcopy(p)
