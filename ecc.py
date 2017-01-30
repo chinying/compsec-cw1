@@ -63,17 +63,20 @@ class EllipticCurve:
                     cnt += 1
         return cnt + 1
 
-    # precondition: you need to provide a point p
-    def sub_order(self, p): # brute force, prime is so small anyway
-        i = 0
+    # precondition: you need to provide a point p, and this generates the subgroup. returns subgroup of points + size
+    def sub_order(self, p): 
+        i = 1
         tmp = deepcopy(p)
+        cycle = set()
+        cycle.add(p)
         while True:
             if self.onCurve(p.x, p.y) is False:
                 break
-            self.insertPoint(p)
+            else:
+                cycle.add(p)
             p = self.add(p, tmp)
             i += 1
-        return i + 1 # include point at infinity
+        return (cycle, i)
 
     def insertPoint(self, point):
         self.points.add(point)
