@@ -1,4 +1,5 @@
 from copy import deepcopy
+import miscmath
 
 class Point:
     def __init__(self, x, y):
@@ -27,28 +28,37 @@ class EllipticCurve:
     def _y(self, x):
         return (x**3 + self.a * x + self.b)
 
+    """checks if on the curve"""
     def onCurve(self, x, y):
         return (self._y(x)) % self.k == (y ** 2) % self.k
 
     def add(self, p, q):
+        if p.x == 0 and p.y == 0:
+            return q
+        if q.x == 0 and q.y == 0:
+            return p
+
+        # technically there should be another case where p and q are 0
+
         if p == q:
-            m = ((3 * (p.x ** 2) + self.a) % self.k) * (self.modinv(
+            m = ((3 * (p.x ** 2) + self.a) % self.k) * (miscmath.multinv(
                 2 * p.y, self.k)) % self.k
         else:
-            m = (((p.y - q.y) % self.k) * self.modinv(p.x - q.x, 
+            m = (((p.y - q.y) % self.k) * miscmath.multinv(p.x - q.x, 
                 self.k)) % self.k
         xr = (m**2 - p.x - q.x) % self.k
         yr = -(q.y + m * (xr - q.x)) % self.k
         return Point(xr, yr)
-    
-    # nice TODO use the doubling thing like fast exp, 
-    # speeds up from linear to log
+
     def mult(self, p, n):
-        tmp = deepcopy(p) # idk enough about this but deep copy just in case
-        # n-1 because n*p is adding p to itself n-1 times 
-        for i in range(n-1): 
-            p = self.add(p, tmp)
-        return p
+        tmp = deepcopy(p)
+        q = Point(0, 0)
+        bits = miscmath.bits(n)
+        for bit in bits:
+            if bit == 1:
+                q = self.add(q, tmp)
+            tmp = self.add(tmp, tmp)
+        return q
 
     def modinv(self, a, m):
         r, s, t = 1, 0, a
